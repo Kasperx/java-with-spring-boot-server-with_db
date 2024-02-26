@@ -21,7 +21,8 @@ import java.util.Map;
 import static com.example.demo.service.PersonService.*;
 
 @RestController
-@RequestMapping("/persons")
+//@RequestMapping("/persons")
+@RequestMapping("")
 public class PersonController {
 
     private static final Logger log = LoggerFactory.getLogger(PersonController.class);
