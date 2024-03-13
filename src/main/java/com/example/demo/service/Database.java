@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Person;
+import com.example.demo.repository.PersonRepository;
 import com.github.javafaker.Faker;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
@@ -41,13 +42,18 @@ public class Database {
         List<Person> personList = new ArrayList<>();
         // Create random person
         for (int i = 0; i < 10; i++) {
-            log.info("Creating data for random person #"+(i+1)+".");
-            personList.add(getNewPerson(false));
+            Person person = getNewPerson();
+            log.info("Creating data for random person #"+(i+1)+". ["+person.toString()+"]");
+            //personList.add(getNewPerson(false));
+            personList.add(person);
         }
-        log.info("Saving all data ("+personList.size()+") to database.");
+        //log.info("Saving all "+personList.size()+" to database.");
         return personList;
     }
 
+    static Person getNewPerson () {
+        return getNewPerson(false);
+    }
     static Person getNewPerson (boolean isAdmin) {
         Faker faker = new Faker();
         String firstName = faker.name().firstName();
