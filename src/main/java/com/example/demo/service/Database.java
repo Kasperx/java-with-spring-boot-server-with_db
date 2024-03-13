@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @Component
 @EnableTransactionManagement
 public class Database {
-
+/*
     Environment environment;
     private static final Logger log = LoggerFactory.getLogger(Database.class);
 
@@ -67,4 +67,6 @@ public class Database {
                 isAdmin
         );
     }
+
+ */
 }

@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.controller.PersonController;
 import com.example.demo.entity.Person;
 import com.github.javafaker.Faker;
 import jakarta.persistence.Column;
@@ -8,19 +7,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.resource.PathResourceResolver;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.JstlView;
-import org.thymeleaf.spring5.SpringTemplateEngine;
-import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
-import org.thymeleaf.templatemode.TemplateMode;
 
 import java.lang.reflect.Field;
 import java.security.InvalidParameterException;
@@ -33,8 +21,8 @@ import java.util.concurrent.ThreadLocalRandom;
 //@EnableWebMvc
 public class PersonService implements WebMvcConfigurer {
 
-    public static final String MESSAGE_ERROR_WRONG_PARAMETERS = "ERROR: Wrong parameter for admin account.";
-    public static final String MESSAGE_ERROR_EMPTY_PARAMETERS = "ERROR: Parameters are empty.";
+    public static final String MESSAGE_ERROR_WRONG_PARAMETERS = "ERROR: Wrong parameters for admin account.";
+    public static final String MESSAGE_ERROR_EMPTY_PARAMETERS = "ERROR: Empty parameters for admin account.";
     public static final String TEXT_EMAIL_ADDRESS_FOR_PERSON = "@gmail.com";
     private static final Logger log = LoggerFactory.getLogger(PersonService.class);
     public static final String databaseName = "PERSON";
@@ -199,18 +187,18 @@ public class PersonService implements WebMvcConfigurer {
         return templateEngine;
     }
      */
-    public static List<Person> getNewData () {
+    public static List<Person> createNewData() {
         List<Person> personList = new ArrayList<>();
         // Create admin person
         log.info("Creating data for admin.");
         personList.add(getNewPerson(true));
         // Create random person
-        personList.addAll(getData());
+        personList.addAll(filterPersonData());
         log.info("Saving all "+personList.size()+" data to database.");
         return personList;
     }
 
-    public static List<Person> getData () {
+    public static List<Person> filterPersonData() {
         List<Person> personList = new ArrayList<>();
         // Create random person
         for (int i = 0; i < 10; i++) {
@@ -253,15 +241,31 @@ public class PersonService implements WebMvcConfigurer {
         }
     }
 
-    public static List<Person> getAllWithoutPrivateData(List<Person> personList){
+    public static List<Person> filterPersonData(List<Person> personList) {
+        return filterPersonData(false, personList);
+    }
+    public static List<Person> filterPersonData(boolean isAdmin, List<Person> personList){
         List<Person> temp = new ArrayList<>();
-        for(Person person: personList){
-            if(!person.isAdmin()){
+        if(isAdmin){
+            for (Person person : personList) {
                 temp.add(new Person(
                         person.getFirstName(),
                         person.getLastName(),
-                        person.getAge()
+                        person.getEmail(),
+                        person.getPassword(),
+                        person.getAge(),
+                        person.isAdmin()
                 ));
+            }
+        } else {
+            for (Person person : personList) {
+                if (!person.isAdmin()) {
+                    temp.add(new Person(
+                            person.getFirstName(),
+                            person.getLastName(),
+                            person.getAge()
+                    ));
+                }
             }
         }
         return temp;
