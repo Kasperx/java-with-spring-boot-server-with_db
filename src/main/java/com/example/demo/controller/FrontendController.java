@@ -40,7 +40,7 @@ public class FrontendController {
 
     @Autowired
     PersonRepository personRepository;
-    final String htmlFile = "tutorials";
+    final String htmlFile = "index";
 
     //public FrontendController(PersonRepository frontendController) { this.personRepository = frontendController; }
 
