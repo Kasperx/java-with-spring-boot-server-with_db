@@ -39,7 +39,7 @@ public class PersonController {
     @PostMapping("/createMoreData")
     public void createMoreData(@RequestParam String username, @RequestParam String pw) throws InvalidParameterException {
         if(isAdminAccount(username, pw)) {
-            List<Person> personList = filterPersonData();
+            List<Person> personList = createNewData();
             log.info("Saving all data ("+personList.size()+") to database.");
             personRepository.saveAll(personList);
         }

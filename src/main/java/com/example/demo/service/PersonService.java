@@ -129,76 +129,18 @@ public class PersonService implements WebMvcConfigurer {
         }
     }
     private static final String pathToWebFiles = "/resources/webapp";
-    /*
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry
-                .addResourceHandler(pathToWebFiles+"/**")
-                .addResourceLocations(pathToWebFiles);
-    }
-     */
-    /*
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry
-                .addResourceHandler(pathToWebFiles+"/**")
-                .addResourceLocations(pathToWebFiles)
-                .setCachePeriod(3600)
-                .resourceChain(true)
-                .addResolver(new PathResourceResolver());
-    }
-     */
-    /*
-    @Bean
-    ViewResolver viewResolver(){
-        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-        viewResolver.setViewClass(JstlView.class);
-        viewResolver.setPrefix(pathToWebFiles+"/");
-        viewResolver.setSuffix("");
-        return viewResolver;
-    }
-     */
-    /*
-    ApplicationContext applicationContext;
-    @Bean
-    public SpringResourceTemplateResolver templateResolver(){
-        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
-        templateResolver.setApplicationContext(this.applicationContext);
-        templateResolver.setPrefix(pathToWebFiles+"/");
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-        templateResolver.setCacheable(true);
-        return templateResolver;
-    }
-     */
-    /*
-    @Bean
-    public SpringTemplateEngine templateEngine(){
-        // SpringTemplateEngine automatically applies SpringStandardDialect and
-        // enables Spring's own MessageSource message resolution mechanisms.
-        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver());
-        // Enabling the SpringEL compiler with Spring 4.2.4 or newer can
-        // speed up execution in most scenarios, but might be incompatible
-        // with specific cases when expressions in one template are reused
-        // across different data types, so this flag is "false" by default
-        // for safer backwards compatibility.
-        templateEngine.setEnableSpringELCompiler(true);
-        return templateEngine;
-    }
-     */
-    public static List<Person> createNewData() {
+    public static List<Person> createNewDataWithAdmin() {
         List<Person> personList = new ArrayList<>();
         // Create admin person
         log.info("Creating data for admin.");
         personList.add(getNewPerson(true));
         // Create random person
-        personList.addAll(filterPersonData());
+        personList.addAll(createNewData());
         log.info("Saving all "+personList.size()+" data to database.");
         return personList;
     }
 
-    public static List<Person> filterPersonData() {
+    public static List<Person> createNewData() {
         List<Person> personList = new ArrayList<>();
         // Create random person
         for (int i = 0; i < 10; i++) {
@@ -252,7 +194,9 @@ public class PersonService implements WebMvcConfigurer {
                         person.getFirstName(),
                         person.getLastName(),
                         person.getEmail(),
-                        person.getPassword(),
+                        (careAboutPersonalData
+                                ? "***"
+                                : person.getPassword()),
                         person.getAge(),
                         person.isAdmin()
                 ));

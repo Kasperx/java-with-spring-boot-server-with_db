@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.InvalidParameterException;
 import java.util.List;
+import java.util.Map;
 
-import static com.example.demo.service.PersonService.filterPersonData;
-import static com.example.demo.service.PersonService.isAdminAccount;
+import static com.example.demo.service.PersonService.*;
 
 //@RestController
 @Controller
@@ -47,7 +47,7 @@ public class FrontendController {
     @PostMapping("/createMoreData")
     public void createMoreData(@RequestParam String username, @RequestParam String pw) throws InvalidParameterException {
         if(isAdminAccount(username, pw)) {
-            List<Person> personList = PersonService.filterPersonData();
+            List<Person> personList = createNewData();
             log.info("Saving all data ("+personList.size()+") to database.");
             personRepository.saveAll(personList);
         }
@@ -74,57 +74,11 @@ public class FrontendController {
         return htmlFile;
     }
     void createNewDataIfNotCreated(){
-        if(personRepository.findAll().isEmpty()){
-            List<Person> personList = PersonService.filterPersonData();
+        //if(personRepository.findAll().isEmpty()){
+        if(jdbcTemplate.queryForList("select * from " + databaseName + " limit 1;").isEmpty()){
+            List<Person> personList = createNewDataWithAdmin();
             log.info("Saving all data ("+personList.size()+") to database.");
             personRepository.saveAll(personList);
         }
     }
-    /*
-    @GetMapping(value = "/2")
-    public String load2(){
-        //return "forward:/resources/templates/index.html";
-        return htmlFile;
-    }
-    @GetMapping(value = "/3")
-    public ModelAndView load3(){
-        ModelAndView view = new ModelAndView();
-        view.setViewName(htmlFile);
-        return view;
-    }
-     */
-    /*
-    @GetMapping(value = "/4")
-    public ModelAndView load4(){
-        ModelAndView view = new ModelAndView();
-        view.setViewName("index.html");
-        return view;
-    }
-     */
-    /*
-    @GetMapping(value = "/5/index.html")
-    public ModelAndView load5(){
-        ModelAndView view = new ModelAndView();
-        view.setViewName(htmlFile);
-        return view;
-    }
-    @GetMapping(value = "/5")
-    public ModelAndView load5test(){
-        ModelAndView view = new ModelAndView();
-        view.setViewName(htmlFile);
-        return view;
-    }
-    @GetMapping(value = "/6")
-    public ModelAndView load6(){
-        ModelAndView view = new ModelAndView();
-        view.setViewName(htmlFile);
-        return view;
-    }
-
-    @GetMapping("/index")
-    public String showUserList(Model model) {
-        model.addAttribute("users", personRepository.findAll());
-        return htmlFile;
-    }
-     */
 }
