@@ -1,0 +1,27 @@
+
+stages:
+  - build
+  - test
+  - deploy
+
+compile:
+  stage: build
+  script:
+    - echo "Compile java code"
+    - mvn clean install -Dmaven.test.skip
+
+test:
+  stage: test
+  script:
+    - echo "Run tests (after compile)"
+    - mvn test
+  dependencies:
+    - compile
+
+deploy:
+  stage: deploy
+  only:
+    refs:
+      - master
+      - main
+  when: manual
